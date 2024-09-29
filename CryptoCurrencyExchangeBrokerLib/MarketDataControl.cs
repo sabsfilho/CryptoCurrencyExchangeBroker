@@ -10,107 +10,59 @@ namespace CryptoCurrencyExchangeBrokerLib;
 public class MarketDataControl : IMarketData
 {
     private object locker = new object();
-    private IMarketDataProvider Provider { get; set; }
-    private IMarketDataEventListener Listener { get; set; }
-    private MarketDataWebSocket? MarketDataWebSocket { get; set; }
-    public MarketDataStatusEnum Status { get; private set; }
-    private bool CanStart =>
-        Status == MarketDataStatusEnum.Undefined ||
-        Status == MarketDataStatusEnum.Stopped;
+    private MarketDataWebSocket MarketDataWebSocket { get; set; }
+    public MarketDataStatusEnum Status => MarketDataWebSocket.Status;
 
-    public MarketDataControl()
-        : this(
-              new provider.BitstampProvider(), 
-              new LocalMarketDataEventListener()
-        )
-    {
-    }
     public MarketDataControl(
         IMarketDataProvider provider,
         IMarketDataEventListener listener
     )
     {
-        Provider = provider;
-        Listener = listener;
+        MarketDataWebSocket = new MarketDataWebSocket(provider, listener);
     }
 
+    /// <summary>
+    /// Connect to the websocket stream on the background thread
+    /// </summary>
     public void Start()
     {
         lock (locker)
         {
-            if (!CanStart)
-                throw new MarketDataException("MarketData already started!");
-
-            StartInternal();
+            MarketDataWebSocket.Start();
         }
     }
+    /// <summary>
+    /// Disconnect the websocket stream 
+    /// </summary>
     public void Stop()
     {
         lock (locker)
         {
-            if (MarketDataWebSocket == null) 
-                return;
-
-            Status = MarketDataStatusEnum.Stopping;
-            MarketDataWebSocket.Disconnect();
-            Status = MarketDataStatusEnum.Stopped;
+            MarketDataWebSocket.Stop();
         }
     }
+    /// <summary>
+    /// Subscribe to a channel to feed instrument data
+    /// </summary>
+    /// <param name="channel">available channel</param>
+    /// <param name="instrument">instrument key: btcusd or ethusd ...</param>
     public void Subscribe(ChannelEnum channel, string instrument)
     {
         lock (locker)
         {
-            if (string.IsNullOrEmpty(instrument))
-                throw new MarketDataException("undefined instrument");
-
-            if (Status != MarketDataStatusEnum.Started)
-            {
-                StartInternal();
-            }
-
-            string msg = Provider.GetSubscribeMessage(channel, instrument);
-
-            MarketDataWebSocket!.SendMessage(msg);
+            MarketDataWebSocket.Subscribe(channel, instrument);
         }
     }
+    /// <summary>
+    /// Unsubscribe to a channel to disconnect the instrument data feed
+    /// </summary>
+    /// <param name="channel">available channel</param>
+    /// <param name="instrument">instrument key: btcusd or ethusd ...</param>
     public void Unsubscribe(ChannelEnum channel, string instrument)
     {
         lock (locker)
         {
-            if (string.IsNullOrEmpty(instrument))
-                throw new MarketDataException("undefined instrument");
-
-            if (Status != MarketDataStatusEnum.Started)
-                throw new MarketDataException("MarketData not started!");
-
-            string msg = Provider.GetUnsubscribeMessage(channel, instrument);
-
-            MarketDataWebSocket!.SendMessage(msg);
-        }
-    }
-    private void StartInternal()
-    {
-        Status = MarketDataStatusEnum.Starting;
-
-        MarketDataWebSocket = new MarketDataWebSocket(Provider, Listener);
-        MarketDataWebSocket.Connect();
-
-        MarketDataWebSocket.StartMessageListener();
-
-        Status = MarketDataStatusEnum.Started;
-    }
-
-    // single instance
-    private static MarketDataControl? marketDataInstance = null;
-    public static MarketDataControl MarketDataInstance 
-    {
-        get
-        {
-            if (marketDataInstance == null)
-            {
-                marketDataInstance = new MarketDataControl();
-            }
-            return marketDataInstance;
+            MarketDataWebSocket.Subscribe(channel, instrument);
         }
     }
 }

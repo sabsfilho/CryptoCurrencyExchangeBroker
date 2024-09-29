@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CryptoCurrencyExchangeBrokerLib;
 
-namespace CryptoCurrencyExchangeBrokerLib;
+namespace CryptoCurrencyExchangeBrokerConsole;
 public class LocalMarketDataEventListener : IMarketDataEventListener
 {
     public void ExchangeConnected(string url)
@@ -24,6 +24,11 @@ public class LocalMarketDataEventListener : IMarketDataEventListener
     }
 
     public void MessageReceived(string msg)
+    {
+        Console.WriteLine(msg);
+    }
+
+    public void SendMessage(string msg)
     {
         Console.WriteLine(msg);
     }

@@ -7,4 +7,5 @@ public interface IMarketDataProvider
     string WebsocketServerEndpointUrl { get; }
     string GetSubscribeMessage(ChannelEnum channel, string instruments);
     string GetUnsubscribeMessage(ChannelEnum channel, string instruments);
+    void MessageReceived(string msg);
 }

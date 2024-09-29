@@ -6,4 +6,5 @@ public interface IMarketDataEventListener
     void MessageListenerFinished();
     void MessageListenerStarting();
     void MessageReceived(string msg);
+    void SendMessage(string msg);
 }

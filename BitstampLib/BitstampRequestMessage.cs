@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CryptoCurrencyExchangeBrokerLib.provider;
-public class BitstampMessage
+namespace BitstampLib;
+public class BitstampRequestMessage
 {
     [JsonPropertyName("event")]
     public required string Event { get; set; }
     [JsonPropertyName("data")]
-    public required BitstampData Data { get; set; }
-
+    public required BitstampRequestData Data { get; set; }
 }

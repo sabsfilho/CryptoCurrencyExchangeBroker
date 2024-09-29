@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+    <ProjectReference Include="..\CryptoCurrencyExchangeBrokerLib\CryptoCurrencyExchangeBrokerLib.csproj" />
   </ItemGroup>
 
 </Project>
