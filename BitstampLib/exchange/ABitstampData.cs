@@ -17,14 +17,23 @@ internal abstract class ABitstampData<T>
         Data = data;
         ExchangeData = Load(ticker);
     }
-    protected Dictionary<int, decimal> GetOffers(string fieldName)
+    protected OrderBookItem[] GetOffers(string fieldName)
     {
         return
             DataJson
                 .GetProperty(fieldName)
                 .EnumerateArray()
-                .Select(x => x.EnumerateArray().ToArray())
-                .ToDictionary(x => int.Parse(x[0].GetString()!), x => decimal.Parse(x[1].GetString()!));
+                .Select(x =>
+                {
+                    var arr = x.EnumerateArray().ToArray();
+                    return
+                        new OrderBookItem()
+                        {
+                            Quantity = int.Parse(x[0].GetString()!),
+                            Price = decimal.Parse(x[1].GetString()!)
+                        };
+                })
+                .ToArray();
     }
 
     protected DateTime GetMicrotimestamp()
