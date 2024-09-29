@@ -17,6 +17,7 @@ internal class MarketDataWebSocket : IDisposable
     private ClientWebSocket? ClientWebSocket { get; set; }
     private IMarketDataProvider Provider { get; set; }
     private IMarketDataEventListener Listener { get; set; }
+    private IMarketDataWriter? Writer { get; set; }
     private CancellationTokenSource Cancellation { get; set; }
     public MarketDataStatusEnum Status { get; private set; }
     private bool CanStart =>
@@ -25,11 +26,13 @@ internal class MarketDataWebSocket : IDisposable
 
     public MarketDataWebSocket(
         IMarketDataProvider provider,
-        IMarketDataEventListener listener
+        IMarketDataEventListener listener,
+        IMarketDataWriter? writer = null
     )
     {
         Provider = provider;
         Listener = listener;
+        Writer = writer;
         Status = MarketDataStatusEnum.Undefined;
         Cancellation = new CancellationTokenSource();
     }
@@ -51,6 +54,20 @@ internal class MarketDataWebSocket : IDisposable
 
         Listener.ExchangeConnected(url);
     }
+
+    public void Restart()
+    {
+        Status = MarketDataStatusEnum.Restarting;
+        Listener.MessageListenerRestarting();
+        ClientWebSocket = null;
+        Status = MarketDataStatusEnum.Undefined;
+        listening = false;
+        subscribed = false;
+        Cancellation = new CancellationTokenSource();
+
+        Start();
+    }
+
     public void Stop()
     {
         if (ClientWebSocket == null)
@@ -106,14 +123,14 @@ internal class MarketDataWebSocket : IDisposable
     /// <exception cref="MarketDataException"></exception>
     private async Task StartMessageListener()
     {
-        if (ClientWebSocket == null)
-            throw new MarketDataException("Websocket disconnected");
-
-        if (listening)
-            throw new MarketDataException("already listening");
-
         try
         {
+            if (ClientWebSocket == null)
+                throw new MarketDataException("Websocket disconnected");
+
+            if (listening)
+                throw new MarketDataException("already listening");
+
             Listener.MessageListenerStarting();
 
             var buffer = new Memory<byte>(new byte[BUFFER_SIZE]);
@@ -134,12 +151,14 @@ internal class MarketDataWebSocket : IDisposable
                             break;
                     }
 
-                    ms.Seek(0, SeekOrigin.Begin);
-
-                    var msg = Encoding.UTF8.GetString(ms.ToArray());
+                    ArraySegment<byte> buf;
+                    ms.TryGetBuffer(out buf);
+                    var msg = Encoding.UTF8.GetString(buf.ToArray());
 
                     Listener.MessageReceived(msg);
-                    Provider.MessageReceived(msg);
+                    var exchangeData = Provider.MessageReceived(msg);
+                    if (Writer != null && exchangeData != null)
+                        Writer.Write(exchangeData);
                 }
 
             }
@@ -148,6 +167,11 @@ internal class MarketDataWebSocket : IDisposable
                 Status == MarketDataStatusEnum.Started &&
                 !Cancellation.IsCancellationRequested
             );
+        }
+        catch(Exception ex)
+        {
+            Status = MarketDataStatusEnum.Error;
+            Listener.ExceptionThrown(ex);
         }
         finally
         {

@@ -6,5 +6,6 @@ public enum MarketDataStatusEnum
     Started,
     Stopping,
     Stopped,
-    Error
+    Error,
+    Restarting
 }

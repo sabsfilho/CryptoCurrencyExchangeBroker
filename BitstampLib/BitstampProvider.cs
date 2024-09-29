@@ -1,8 +1,11 @@
-﻿using CryptoCurrencyExchangeBrokerLib;
+﻿using BitstampLib.exchange;
+using CryptoCurrencyExchangeBrokerLib;
+using CryptoCurrencyExchangeBrokerLib.exchange;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using System.Threading.Channels;
 
 namespace BitstampLib;
 /// <summary>
@@ -55,13 +58,61 @@ public class BitstampProvider : IMarketDataProvider
             };
     }
 
-    public void MessageReceived(string msg)
+    public AExchangeData? MessageReceived(string msg)
     {
         var o = JsonSerializer.Deserialize<BitstampResponseMessage>(msg)!;
+
         if (o.Event == "bts:error")
-            throw new Exception(o.Data == null ? "error" : o.Data.Message ?? "error");
-        
-        
+        {
+            var responseData = o.Data as BitstampResponseData;
+
+            string m =
+                responseData == null ? "error" :
+                responseData.Message ?? "error";
+            throw new BitstampException(m);
+        }
+
+        if (o.Event != "data")
+            return null;
+
+        return
+            GetExchangeData(o);
+    }
+
+    private AExchangeData GetExchangeData(BitstampResponseMessage o)
+    {
+        if (o.Channel == null)
+            throw new BitstampException("channel is undefined");
+
+        if (o.Data == null)
+            throw new BitstampException("data is undefined");
+
+        string channel = o.Channel;
+        var x = GetChannelAndTicker(channel);
+        switch (x.Channel)
+        {
+            case "order_book":
+                return new BitstampOrderBook(x.Ticker, o.Data).ExchangeData;
+            case "detail_order_book":
+            case "diff_order_book":
+            case "live_orders_book":
+            case "live_trades_book":
+                throw new NotImplementedException(x.Channel);
+        }
+
+        throw new BitstampException($"undefined channel {x.Channel}");
+
+    }
+
+    private static (string Channel, string Ticker) GetChannelAndTicker(string channel)
+    {
+        int i = channel.LastIndexOf('_');
+        if (i == -1)
+            throw new BitstampException($"ticker undefined in {channel}");
+        return (
+            channel.Substring(0, i),
+            channel.Substring(i+1)
+        );
     }
 
     private string GetChannelTag(ChannelEnum channel)
@@ -80,6 +131,6 @@ public class BitstampProvider : IMarketDataProvider
                 return "live_trades_book";
         }
 
-        throw new MarketDataException("undefined channel");
+        throw new BitstampException($"undefined channel {channel.ToString()}");
     }
 }

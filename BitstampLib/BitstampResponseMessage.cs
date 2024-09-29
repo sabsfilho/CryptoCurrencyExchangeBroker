@@ -8,6 +8,6 @@ public class BitstampResponseMessage
     [JsonPropertyName("channel")]
     public string? Channel { get; set; }
     [JsonPropertyName("data")]
-    public BitstampResponseData? Data { get; set; }
+    public object? Data { get; set; }
 
 }
