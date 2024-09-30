@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CryptoCurrencyExchangeBrokerLib.orderbook;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
@@ -12,6 +13,8 @@ public class MarketDataControl : IMarketData
     private object locker = new object();
     private MarketDataWebSocket MarketDataWebSocket { get; set; }
     public MarketDataStatusEnum Status => MarketDataWebSocket.Status;
+
+    public OrderBookState OrderBookState => MarketDataWebSocket.OrderBookState;
 
     public MarketDataControl(
         IMarketDataProvider provider,

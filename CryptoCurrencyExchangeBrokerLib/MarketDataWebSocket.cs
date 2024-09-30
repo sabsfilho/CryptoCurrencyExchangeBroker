@@ -1,4 +1,5 @@
-﻿using Microsoft.IO;
+﻿using CryptoCurrencyExchangeBrokerLib.orderbook;
+using Microsoft.IO;
 using System;
 using System.Net.WebSockets;
 using System.Text;
@@ -20,6 +21,7 @@ internal class MarketDataWebSocket : IDisposable
     private IMarketDataWriter? Writer { get; set; }
     private CancellationTokenSource Cancellation { get; set; }
     public MarketDataStatusEnum Status { get; private set; }
+    public OrderBookState OrderBookState { get; set; }
     private bool CanStart =>
         Status == MarketDataStatusEnum.Undefined ||
         Status == MarketDataStatusEnum.Stopped;
@@ -33,7 +35,11 @@ internal class MarketDataWebSocket : IDisposable
         Provider = provider;
         Listener = listener;
         Writer = writer;
+        
+        OrderBookState = new OrderBookState();
+
         Status = MarketDataStatusEnum.Undefined;
+        
         Cancellation = new CancellationTokenSource();
     }
 
@@ -80,8 +86,11 @@ internal class MarketDataWebSocket : IDisposable
 
         Cancellation.Cancel();
 
-        var task = ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "disconnect", CancellationToken.None);
-        task.Wait();
+        if (ClientWebSocket.State == WebSocketState.Open)
+        {
+            var task = ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "disconnect", CancellationToken.None);
+            task.Wait();
+        }
         
         Status = MarketDataStatusEnum.Stopped;
         
@@ -157,6 +166,7 @@ internal class MarketDataWebSocket : IDisposable
 
                     Listener.MessageReceived(msg);
                     var exchangeData = Provider.MessageReceived(msg);
+                    OrderBookState.MessageReceived(exchangeData);
                     if (Writer != null && exchangeData != null)
                         Writer.Write(exchangeData);
                 }

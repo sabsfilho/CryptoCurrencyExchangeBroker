@@ -29,8 +29,8 @@ internal abstract class ABitstampData<T>
                     return
                         new OrderBookItem()
                         {
-                            Quantity = int.Parse(x[0].GetString()!),
-                            Price = decimal.Parse(x[1].GetString()!)
+                            Amount = decimal.Parse(x[1].GetString()!),
+                            Price = decimal.Parse(x[0].GetString()!)
                         };
                 })
                 .ToArray();

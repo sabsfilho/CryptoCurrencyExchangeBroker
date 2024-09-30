@@ -2,7 +2,13 @@
 {
     public class OrderBookItem : AExchangeData
     {
-        public required int Quantity { get; set; }
+        /// <summary>
+        /// Cryptocurrency Amount
+        /// </summary>
+        public required decimal Amount { get; set; }
+        /// <summary>
+        /// Traditional Monetary Unit Price
+        /// </summary>
         public required decimal Price { get; set; }
     }
 }
