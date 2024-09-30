@@ -5,5 +5,6 @@ public interface IMarketData
     void Start();
     void Stop();
     void Subscribe(ChannelEnum channel, string instrument);
-    void Unsubscribe(ChannelEnum channe, string instrumentl);
+    void Unsubscribe(ChannelEnum channel, string instrument);
+    decimal GetBestPrice(bool buy, string instrument, decimal cryptoAmount);
 }

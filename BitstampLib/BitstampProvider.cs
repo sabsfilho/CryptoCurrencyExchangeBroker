@@ -88,11 +88,11 @@ public class BitstampProvider : IMarketDataProvider
             throw new BitstampException("data is undefined");
 
         string channel = o.Channel;
-        var x = GetChannelAndTicker(channel);
+        var x = GetChannelAndInstrument(channel);
         switch (x.Channel)
         {
             case "order_book":
-                return new BitstampOrderBook(x.Ticker, o.Data).ExchangeData;
+                return new BitstampOrderBook(x.Instrument, o.Data).ExchangeData;
             case "detail_order_book":
             case "diff_order_book":
             case "live_orders_book":
@@ -104,11 +104,11 @@ public class BitstampProvider : IMarketDataProvider
 
     }
 
-    private static (string Channel, string Ticker) GetChannelAndTicker(string channel)
+    private static (string Channel, string Instrument) GetChannelAndInstrument(string channel)
     {
         int i = channel.LastIndexOf('_');
         if (i == -1)
-            throw new BitstampException($"ticker undefined in {channel}");
+            throw new BitstampException($"instrument undefined in {channel}");
         return (
             channel.Substring(0, i),
             channel.Substring(i+1)

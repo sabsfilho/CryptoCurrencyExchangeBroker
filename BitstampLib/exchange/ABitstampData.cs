@@ -7,15 +7,15 @@ namespace BitstampLib.exchange;
 internal abstract class ABitstampData<T> 
     where T : AExchangeData
 {
-    public abstract T Load(string ticker);
+    public abstract T Load(string instrument);
     protected Object Data { get; private set; }
     protected JsonElement DataJson => (JsonElement)Data;
     public T ExchangeData { get; set; }
     
-    public ABitstampData(string ticker, object data)
+    public ABitstampData(string instrument, object data)
     {
         Data = data;
-        ExchangeData = Load(ticker);
+        ExchangeData = Load(instrument);
     }
     protected OrderBookItem[] GetOffers(string fieldName)
     {

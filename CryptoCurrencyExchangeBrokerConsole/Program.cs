@@ -5,26 +5,40 @@ using CryptoCurrencyExchangeBrokerLib;
 Console.WriteLine("CryptoCurrencyExchangeBroker running...");
 Console.WriteLine("\n\n*** Press any key to stop. ***\n\n");
 
+var instruments = new string[]
+{
+    "btcusd",
+    "ethusd"
+};
+var marketDataInstances = new List<MarketDataControl>();
+var provider = new BitstampProvider();
 var localListener =
     new LocalMarketDataEventListener()
     {
         LogMessageReceived = false
     };
 
-var marketDataInstance = new MarketDataControl(
-    new BitstampProvider(),
-    localListener
-);
+foreach (var intrument in instruments)
+{
+    var marketDataInstance = 
+        MarketDataControl.SubscribeOrderBook(
+            provider,
+            localListener,
+            intrument
+        );
 
-marketDataInstance.Subscribe(
-    CryptoCurrencyExchangeBrokerLib.ChannelEnum.OrderBook, 
-    "btcusd"
-);
+    localListener.StartLoggingOrderBookState(marketDataInstance);
 
-localListener.StartLoggingOrderBookState(marketDataInstance);
+    localListener.StartLoggingGetBestPrice(marketDataInstance);
+
+}
+
 
 Console.ReadKey();
 
-marketDataInstance.Stop();
+foreach (var marketDataInstance in marketDataInstances)
+{
+    marketDataInstance.Stop();
+}
 
 Console.WriteLine("exit");

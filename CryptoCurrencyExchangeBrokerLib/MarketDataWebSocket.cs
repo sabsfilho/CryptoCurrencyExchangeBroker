@@ -12,16 +12,16 @@ internal class MarketDataWebSocket : IDisposable
     /* https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream */
     private static readonly RecyclableMemoryStreamManager StreamManager = new RecyclableMemoryStreamManager();
 
-    private bool listening = false;
-    private bool subscribed = false;
+    public MarketDataStatusEnum Status { get; private set; }
+    public OrderBookState OrderBookState { get; set; }
+    public bool Subscribed { get; private set; }
 
+    private bool Listening { get; set; }
     private ClientWebSocket? ClientWebSocket { get; set; }
     private IMarketDataProvider Provider { get; set; }
     private IMarketDataEventListener Listener { get; set; }
     private IMarketDataWriter? Writer { get; set; }
     private CancellationTokenSource Cancellation { get; set; }
-    public MarketDataStatusEnum Status { get; private set; }
-    public OrderBookState OrderBookState { get; set; }
     private bool CanStart =>
         Status == MarketDataStatusEnum.Undefined ||
         Status == MarketDataStatusEnum.Stopped;
@@ -67,8 +67,8 @@ internal class MarketDataWebSocket : IDisposable
         Listener.MessageListenerRestarting();
         ClientWebSocket = null;
         Status = MarketDataStatusEnum.Undefined;
-        listening = false;
-        subscribed = false;
+        Listening = false;
+        Subscribed = false;
         Cancellation = new CancellationTokenSource();
 
         Start();
@@ -81,8 +81,8 @@ internal class MarketDataWebSocket : IDisposable
 
         Status = MarketDataStatusEnum.Stopping;
 
-        subscribed = false;
-        listening = false;
+        Subscribed = false;
+        Listening = false;
 
         Cancellation.Cancel();
 
@@ -110,7 +110,7 @@ internal class MarketDataWebSocket : IDisposable
 
         SendMessage(msg);
 
-        subscribed = true;
+        Subscribed = true;
     }
     public void Unsubscribe(ChannelEnum channel, string instrument)
     {
@@ -120,7 +120,7 @@ internal class MarketDataWebSocket : IDisposable
         if (Status != MarketDataStatusEnum.Started)
             throw new MarketDataException("MarketData not started!");
 
-        subscribed = false;
+        Subscribed = false;
 
         string msg = Provider.GetUnsubscribeMessage(channel, instrument);
 
@@ -137,7 +137,7 @@ internal class MarketDataWebSocket : IDisposable
             if (ClientWebSocket == null)
                 throw new MarketDataException("Websocket disconnected");
 
-            if (listening)
+            if (Listening)
                 throw new MarketDataException("already listening");
 
             Listener.MessageListenerStarting();
@@ -145,9 +145,9 @@ internal class MarketDataWebSocket : IDisposable
             var buffer = new Memory<byte>(new byte[BUFFER_SIZE]);
             do
             {
-                listening = true;
+                Listening = true;
 
-                if (!subscribed) continue;
+                if (!Subscribed) continue;
 
                 using (var ms = StreamManager.GetStream())
                 {
@@ -173,7 +173,7 @@ internal class MarketDataWebSocket : IDisposable
 
             }
             while (
-                listening &&
+                Listening &&
                 Status == MarketDataStatusEnum.Started &&
                 !Cancellation.IsCancellationRequested
             );
@@ -185,7 +185,7 @@ internal class MarketDataWebSocket : IDisposable
         }
         finally
         {
-            listening = false;
+            Listening = false;
         }
 
         Listener.MessageListenerFinished();
@@ -199,7 +199,7 @@ internal class MarketDataWebSocket : IDisposable
         if (ClientWebSocket == null)
             throw new MarketDataException("Websocket disconnected");
 
-        if (!listening)
+        if (!Listening)
         {
             Task.Factory.StartNew(StartMessageListener);
         }

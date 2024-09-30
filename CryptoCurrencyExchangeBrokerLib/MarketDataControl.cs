@@ -1,4 +1,5 @@
-﻿using CryptoCurrencyExchangeBrokerLib.orderbook;
+﻿using CryptoCurrencyExchangeBrokerLib.exchange;
+using CryptoCurrencyExchangeBrokerLib.orderbook;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -15,6 +16,7 @@ public class MarketDataControl : IMarketData
     public MarketDataStatusEnum Status => MarketDataWebSocket.Status;
 
     public OrderBookState OrderBookState => MarketDataWebSocket.OrderBookState;
+    public bool Subscribed => MarketDataWebSocket.Subscribed;
 
     public MarketDataControl(
         IMarketDataProvider provider,
@@ -67,5 +69,48 @@ public class MarketDataControl : IMarketData
         {
             MarketDataWebSocket.Subscribe(channel, instrument);
         }
+    }
+
+    /// <summary>
+    /// Get the Best Instrument Price to buy the Crypto amount informed
+    /// </summary>
+    /// <param name="buy">if true get Best Ask value, otherwise get Best Bid value</param>
+    /// <param name="instrument">instrument exchange key</param>
+    /// <param name="cryptoAmount">volume</param>
+    /// <returns>Best Price value</returns>
+    public decimal GetBestPrice(bool buy, string instrument, decimal cryptoAmount)
+    {
+        lock (locker)
+        {
+            var orderBookStateInstrument = OrderBookState.GetState(instrument);
+            if (orderBookStateInstrument == null)
+                return 0;
+
+            AOrderBookBestPrice x =
+                buy ?
+                new BuyOrderBookBestPrice(orderBookStateInstrument, cryptoAmount) :
+                new SellOrderBookBestPrice(orderBookStateInstrument, cryptoAmount);
+            return x.Value;
+        }
+    }
+
+    public static MarketDataControl SubscribeOrderBook(
+        IMarketDataProvider provider,
+        IMarketDataEventListener listener,
+        string instrument
+    )
+    {
+        var marketDataInstance = new MarketDataControl(
+            provider,
+            listener
+        );
+
+        marketDataInstance.Subscribe(
+            CryptoCurrencyExchangeBrokerLib.ChannelEnum.OrderBook,
+            instrument
+        );
+
+        return marketDataInstance;
+
     }
 }

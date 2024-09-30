@@ -4,15 +4,15 @@ using System.Text.Json.Serialization;
 namespace BitstampLib.exchange;
 internal class BitstampOrderBook : ABitstampData<OrderBook>
 {
-    public BitstampOrderBook(string ticker, object data)
-        : base(ticker, data)
+    public BitstampOrderBook(string instrument, object data)
+        : base(instrument, data)
     {
     }
-    public override OrderBook Load(string ticker)
+    public override OrderBook Load(string instrument)
     {
         return new OrderBook() 
         {
-            Ticker = ticker,
+            Instrument = instrument,
             Timestamp = GetMicrotimestamp(),
             Asks = GetOffers("asks"),
             Bids = GetOffers("bids")

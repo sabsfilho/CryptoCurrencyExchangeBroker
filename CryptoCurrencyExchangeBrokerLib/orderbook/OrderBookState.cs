@@ -10,68 +10,24 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
 {
     public class OrderBookState
     {
-        class TimeItem
-        {
-            public required DateTime Timestamp { get; set; }
-            public required decimal Value { get; set; }
-        }
-
         private object locker = new object();
-
-        private Stack<TimeItem> midPrices;
-        private DateTime lastClearMidPriceTime;
+        private Dictionary<string, OrderBookStateInstrument> OrderBookStateInstruments { get; set; }
 
         public OrderBookState()
         {
-            midPrices = new Stack<TimeItem>();
+            OrderBookStateInstruments = new Dictionary<string, OrderBookStateInstrument>();
         }
 
-        private decimal askPrice;
-        public decimal AskPrice
+        public OrderBookStateInstrument? GetState(string instrument)
         {
-            get
-            {
-                lock (locker)
-                {
-                    return askPrice;
-                }
-            }
-        }
-        private decimal bidPrice;
+            if (!OrderBookStateInstruments.ContainsKey(instrument))
+                return null;
 
-        public decimal BidPrice
-        {
-            get
-            {
-                lock (locker)
-                {
-                    return bidPrice;
-                }
-            }
+            return OrderBookStateInstruments[instrument];
         }
-        public decimal MidPrice
+        public OrderBookStateInstrument[] GetStates()
         {
-            get
-            {
-                lock (locker)
-                {
-                    return (askPrice + bidPrice) / 2m;
-                }
-            }
-        }
-        public decimal AvgMidPrice5Sec
-        {
-            get
-            {
-                lock (locker)
-                {
-                    ClearMidPrice(DateTime.Now);
-
-                    return
-                        midPrices.Count == 0 ? 0 :
-                        midPrices.Average(x => x.Value);
-                }
-            }
+            return OrderBookStateInstruments.Values.ToArray();
         }
 
         internal void MessageReceived(AExchangeData? exchangeData)
@@ -82,45 +38,15 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
                 if (orderBook == null)
                     return;
 
-                askPrice = orderBook.Asks[0].Price;
-                bidPrice = orderBook.Bids[0].Price;
-
-                AddMidPrice();
-
-            }
-        }
-
-        private void AddMidPrice()
-        {
-            ClearMidPrice(DateTime.Now);
-            midPrices.Push(new TimeItem()
-            {
-                Timestamp = DateTime.Now,
-                Value = MidPrice
-            });
-        }
-        private void ClearMidPrice(DateTime now)
-        {
-            if ((now - lastClearMidPriceTime).TotalSeconds < 1)
-                return;
-
-            lastClearMidPriceTime = now;
-
-            var tm = new DateTime();
-            while (midPrices.Count > 0)
-            {
-                var tmi = midPrices.Peek().Timestamp;
-                if (tmi == tm)
-                    break;
-                else if (tm == new DateTime())
+                string instrument = orderBook.Instrument;
+                OrderBookStateInstrument o;
+                if (!OrderBookStateInstruments.TryGetValue(instrument, out o!))
                 {
-                    tm = tmi;
-                }
-                if ((now - tmi).TotalSeconds > 5)
-                {
-                    midPrices.Pop();
+                    o = new OrderBookStateInstrument(instrument);
+                    OrderBookStateInstruments.Add(instrument, o);
                 }
 
+                o.MessageReceived(orderBook);
             }
         }
     }
