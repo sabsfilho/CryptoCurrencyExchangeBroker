@@ -2,6 +2,11 @@
 using CryptoCurrencyExchangeBrokerConsole;
 using CryptoCurrencyExchangeBrokerLib;
 
+const bool LOG_MESSAGE_RECEIVED = false;
+const bool LOG_ORDER_BOOK_STATE = false;
+const bool LOG_GET_BEST_PRICE = false;
+const bool LOG_GET_BEST_PRICE_FULL_DETAIL = true;
+
 Console.WriteLine("CryptoCurrencyExchangeBroker running...");
 Console.WriteLine("\n\n*** Press any key to stop. ***\n\n");
 
@@ -15,24 +20,29 @@ var provider = new BitstampProvider();
 var localListener =
     new LocalMarketDataEventListener()
     {
-        LogMessageReceived = false
+        LogMessageReceived = LOG_MESSAGE_RECEIVED
     };
 
 foreach (var intrument in instruments)
 {
-    var marketDataInstance = 
+    var marketDataInstance =
         MarketDataControl.SubscribeOrderBook(
+            intrument,
             provider,
-            localListener,
-            intrument
+            localListener
         );
 
-    localListener.StartLoggingOrderBookState(marketDataInstance);
+    if (LOG_ORDER_BOOK_STATE)
+        localListener.StartLoggingOrderBookState(marketDataInstance);
 
-    localListener.StartLoggingGetBestPrice(marketDataInstance);
+    if (LOG_GET_BEST_PRICE)
+        localListener.StartLoggingGetBestPrice(marketDataInstance);
 
+    if (LOG_GET_BEST_PRICE_FULL_DETAIL)
+        localListener.StartLoggingGetBestPriceFullDetail(marketDataInstance);
+
+    marketDataInstances.Add(marketDataInstance);
 }
-
 
 Console.ReadKey();
 

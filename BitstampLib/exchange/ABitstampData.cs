@@ -27,11 +27,10 @@ internal abstract class ABitstampData<T>
                 {
                     var arr = x.EnumerateArray().ToArray();
                     return
-                        new OrderBookItem()
-                        {
-                            Amount = decimal.Parse(x[1].GetString()!),
-                            Price = decimal.Parse(x[0].GetString()!)
-                        };
+                        new OrderBookItem(
+                            amount: decimal.Parse(x[1].GetString()!),
+                            price: decimal.Parse(x[0].GetString()!)
+                        );
                 })
                 .ToArray();
     }

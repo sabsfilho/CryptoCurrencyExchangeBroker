@@ -11,7 +11,7 @@ internal class MarketDataWebSocket : IDisposable
     private const int BUFFER_SIZE = 1024 * 4;
     /* https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream */
     private static readonly RecyclableMemoryStreamManager StreamManager = new RecyclableMemoryStreamManager();
-
+    public string Instrument { get; private set; }
     public MarketDataStatusEnum Status { get; private set; }
     public OrderBookState OrderBookState { get; set; }
     public bool Subscribed { get; private set; }
@@ -27,16 +27,21 @@ internal class MarketDataWebSocket : IDisposable
         Status == MarketDataStatusEnum.Stopped;
 
     public MarketDataWebSocket(
+        string instrument,
         IMarketDataProvider provider,
         IMarketDataEventListener listener,
         IMarketDataWriter? writer = null
     )
     {
+        if (string.IsNullOrEmpty(instrument))
+            throw new MarketDataException("undefined instrument");
+
+        Instrument = instrument;
         Provider = provider;
         Listener = listener;
         Writer = writer;
         
-        OrderBookState = new OrderBookState();
+        OrderBookState = new OrderBookState(instrument);
 
         Status = MarketDataStatusEnum.Undefined;
         
@@ -96,33 +101,28 @@ internal class MarketDataWebSocket : IDisposable
         
         Listener.ExchangeDiconnected();
     }
-    public void Subscribe(ChannelEnum channel, string instrument)
+    public void Subscribe(ChannelEnum channel)
     {
-        if (string.IsNullOrEmpty(instrument))
-            throw new MarketDataException("undefined instrument");
 
         if (Status != MarketDataStatusEnum.Started)
         {
             Start();
         }
 
-        string msg = Provider.GetSubscribeMessage(channel, instrument);
+        string msg = Provider.GetSubscribeMessage(channel, Instrument);
 
         SendMessage(msg);
 
         Subscribed = true;
     }
-    public void Unsubscribe(ChannelEnum channel, string instrument)
+    public void Unsubscribe(ChannelEnum channel)
     {
-        if (string.IsNullOrEmpty(instrument))
-            throw new MarketDataException("undefined instrument");
-
         if (Status != MarketDataStatusEnum.Started)
             throw new MarketDataException("MarketData not started!");
 
         Subscribed = false;
 
-        string msg = Provider.GetUnsubscribeMessage(channel, instrument);
+        string msg = Provider.GetUnsubscribeMessage(channel, Instrument);
 
         SendMessage(msg);
     }
@@ -140,7 +140,7 @@ internal class MarketDataWebSocket : IDisposable
             if (Listening)
                 throw new MarketDataException("already listening");
 
-            Listener.MessageListenerStarting();
+            Listener.MessageListenerRunning();
 
             var buffer = new Memory<byte>(new byte[BUFFER_SIZE]);
             do

@@ -6,7 +6,7 @@ public interface IMarketDataEventListener
     void ExchangeConnected(string url);
     void ExchangeDiconnected();
     void MessageListenerFinished();
-    void MessageListenerStarting();
+    void MessageListenerRunning();
     void MessageListenerRestarting();
     void MessageReceived(string msg);
     void SendMessage(string msg);

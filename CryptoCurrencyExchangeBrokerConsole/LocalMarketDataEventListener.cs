@@ -1,4 +1,5 @@
 ﻿using CryptoCurrencyExchangeBrokerLib;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace CryptoCurrencyExchangeBrokerConsole;
@@ -31,9 +32,9 @@ public class LocalMarketDataEventListener : IMarketDataEventListener
         Console.WriteLine("ExchangeFinished");
     }
 
-    public void MessageListenerStarting()
+    public void MessageListenerRunning()
     {
-        Console.WriteLine("MessageListenerStarting");
+        Console.WriteLine("MessageListenerRunning");
     }
 
     public void MessageListenerRestarting()
@@ -56,20 +57,24 @@ public class LocalMarketDataEventListener : IMarketDataEventListener
 
     internal void StartLoggingOrderBookState(MarketDataControl marketDataInstance)
     {
-        Task.Factory.StartNew(() =>
+        Task.Factory.StartNew((Action)(() =>
         {
             var orderBookState = marketDataInstance.OrderBookState;
             while (marketDataInstance.Status == MarketDataStatusEnum.Started)
             {
-                var xs = orderBookState.GetStates();
-                foreach (var x in xs)
+                var bid = orderBookState.Bid;
+                var ask = orderBookState.Ask;
+                if (bid != null && ask != null)
                 {
-                    Console.WriteLine($"read {x.Instrument} bid={x.BidPrice.ToString("f4")} ask={x.AskPrice.ToString("f4")} mid={x.MidPrice.ToString("f4")} avg5={x.AvgMidPrice5Sec.ToString("f4")}");
+                    string bidtxt = $"bid={orderBookState.Bid!.Amount.ToString("f4")}@{orderBookState.Bid.Price.ToString("f4")}";
+                    string asktxt = $"ask={orderBookState.Ask!.Amount.ToString("f4")}@{orderBookState.Ask.Price.ToString("f4")}";
+                    Console.WriteLine($"read {orderBookState.Instrument} {bidtxt} {asktxt} mid={orderBookState.MidPrice.ToString("f4")} avg5={orderBookState.AvgMidPrice5Sec.ToString("f4")}");
                 }
                 Thread.Sleep(5000);
             }
-        });
+        }));
     }
+
     internal void StartLoggingGetBestPrice(MarketDataControl marketDataInstance)
     {
         Task.Factory.StartNew(() =>
@@ -77,18 +82,43 @@ public class LocalMarketDataEventListener : IMarketDataEventListener
             var orderBookState = marketDataInstance.OrderBookState;
             while (marketDataInstance.Status == MarketDataStatusEnum.Started)
             {
+                var random = new Random();
                 if (marketDataInstance.Subscribed)
                 {
-                    int k = Random.Shared.Next(1, 10);
+                    bool buy = random.NextDouble() < 0.5;
+                    decimal amount = Convert.ToDecimal(random.NextDouble());
+                    var state = marketDataInstance.GetBestPrice(buy, amount);
+                    if (state == null)
+                        continue;
 
-                    bool buy = k < 5;
-                    string instrument = k < 5 ? "btcusd" : "ethusd";
-                    decimal amount = Convert.ToDecimal(Random.Shared.NextDouble());
-                    decimal v = marketDataInstance.GetBestPrice(false, instrument, 1m);
-
-                    Console.WriteLine($"{(buy ? "buy" : "sell")} {instrument} {amount} = {v}");
+                    Console.WriteLine($"{(buy ? "buy" : "sell")} {marketDataInstance.Instrument} {amount} = {state.Value}");
                 }
-                Thread.Sleep(Random.Shared.Next(3, 7) * 1000);
+                Thread.Sleep(random.Next(3, 7) * 1000);
+            }
+        });
+    }
+
+    internal void StartLoggingGetBestPriceFullDetail(MarketDataControl marketDataInstance)
+    {
+        Task.Factory.StartNew(() =>
+        {
+            var orderBookState = marketDataInstance.OrderBookState;
+            while (marketDataInstance.Status == MarketDataStatusEnum.Started)
+            {
+                var random = new Random();
+                if (marketDataInstance.Subscribed)
+                {
+                    bool buy = random.NextDouble() < 0.5;
+                    decimal amount = Convert.ToDecimal(random.NextDouble());
+                    var state = marketDataInstance.GetBestPrice(buy, amount);
+                    if (state == null)
+                        continue;
+
+                    string json = JsonSerializer.Serialize(state);
+
+                    Console.WriteLine(json);
+                }
+                Thread.Sleep(60_000);
             }
         });
     }

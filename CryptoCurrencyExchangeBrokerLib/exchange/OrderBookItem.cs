@@ -5,10 +5,15 @@
         /// <summary>
         /// Cryptocurrency Amount
         /// </summary>
-        public required decimal Amount { get; set; }
+        public decimal Amount { get; private set; }
         /// <summary>
         /// Traditional Monetary Unit Price
         /// </summary>
-        public required decimal Price { get; set; }
+        public decimal Price { get; private set; }
+        public OrderBookItem(decimal amount, decimal price)
+        {
+            Amount = amount;
+            Price = price;
+        }
     }
 }

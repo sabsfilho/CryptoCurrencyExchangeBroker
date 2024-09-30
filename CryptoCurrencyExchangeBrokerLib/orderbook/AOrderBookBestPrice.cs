@@ -10,31 +10,32 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
     internal abstract class AOrderBookBestPrice
     {
         protected abstract OrderBookItem[]? OrderBookItems { get; }
-        public decimal Value { get; private set; }
+        protected abstract bool Buy { get; }
+        public BookBestPriceState? State { get; private set; }
 
-        protected OrderBookStateInstrument OrderBookStateInstrument { get; private set; }
+        protected OrderBookState OrderBookStateInstrument { get; private set; }
         private decimal cryptoAmount;
 
-        public AOrderBookBestPrice(OrderBookStateInstrument orderBookStateInstrument, decimal cryptoAmount)
+        public AOrderBookBestPrice(OrderBookState orderBookStateInstrument, decimal cryptoAmount)
         {
             if (cryptoAmount <= 0)
                 throw new MarketDataException($"{cryptoAmount} amount is invalid");
             OrderBookStateInstrument = orderBookStateInstrument;
             this.cryptoAmount = cryptoAmount;
 
-            Value = CalcValue();
+            State = CalcValue();
         }
 
-        private decimal CalcValue()
+        private BookBestPriceState? CalcValue()
         {
-            var xs = OrderBookItems;
+            var orderBookItems = OrderBookItems;
             
-            if (xs == null || xs.Length == 0)
-                return 0;
+            if (orderBookItems == null || orderBookItems.Length == 0)
+                return null;
 
             decimal amount = cryptoAmount;
             decimal sum = 0;
-            foreach(var x in xs)
+            foreach(var x in orderBookItems)
             {
                 decimal a = x.Amount;
                 decimal p = x.Price;
@@ -47,7 +48,17 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
                 sum += a * p;
                 amount -= a;
             }
-            return sum / cryptoAmount;
+
+            return
+                new BookBestPriceState()
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Instrument = OrderBookStateInstrument.Instrument,
+                    Buy = Buy,
+                    Amount = cryptoAmount,
+                    Value = sum / cryptoAmount,
+                    OrderBookItems = orderBookItems
+                };
         }
     }
 }
