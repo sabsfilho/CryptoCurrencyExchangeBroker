@@ -1,11 +1,15 @@
 ﻿using BitstampLib;
 using CryptoCurrencyExchangeBrokerConsole;
 using CryptoCurrencyExchangeBrokerLib;
+using System.Runtime.CompilerServices;
 
-const bool LOG_MESSAGE_RECEIVED = false;
-const bool LOG_ORDER_BOOK_STATE = false;
-const bool LOG_GET_BEST_PRICE = false;
-const bool LOG_GET_BEST_PRICE_FULL_DETAIL = true;
+Console.WriteLine("CryptoCurrencyExchangeBroker Bitstamp version");
+Console.WriteLine("** This version subscribes btcusd and ethusd instruments. **\n");
+
+bool LOG_MESSAGE_RECEIVED = BuildYesMessage("Do you want to log all messages received from Websocket");
+bool LOG_ORDER_BOOK_STATE = BuildYesMessage("Do you want to log Order Book values on each 5 sec");
+bool LOG_GET_BEST_PRICE = BuildYesMessage("Do you want to log current best prices");
+bool LOG_GET_BEST_PRICE_FULL_DETAIL = BuildYesMessage("Do you want to log current best prices including full detail information");
 
 Console.WriteLine("CryptoCurrencyExchangeBroker running...");
 Console.WriteLine("\n\n*** Press any key to stop. ***\n\n");
@@ -52,3 +56,10 @@ foreach (var marketDataInstance in marketDataInstances)
 }
 
 Console.WriteLine("exit");
+
+
+static bool BuildYesMessage(string m)
+{
+    Console.WriteLine($"\n{m} ? [Y]");
+    return new List<char>{ 'Y', 'y' }.Contains(Console.ReadKey().KeyChar);
+}
