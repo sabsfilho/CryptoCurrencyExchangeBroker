@@ -67,6 +67,8 @@ jobs:
         publish-profile: ${{ secrets.CryptoCurrencyExchangeBrokerAPI20240930232221_67F1 }}
     - name: Azure Login
       uses: azure/login@v1
+      env:
+        CREDENTIALS: ${{ secrets.CryptoCurrencyExchangeBrokerAPIapi_SPN }}
       with:
         creds: ${{ secrets.CryptoCurrencyExchangeBrokerAPIapi_SPN }}
     - name: Import API into Azure API Management
