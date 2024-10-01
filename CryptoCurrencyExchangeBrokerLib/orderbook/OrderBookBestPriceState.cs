@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CryptoCurrencyExchangeBrokerLib.orderbook
 {
-    public class BookBestPriceState
+    public class OrderBookBestPriceState
     {
         public required string ID { get; set; }
         public required string Instrument { get; set; }

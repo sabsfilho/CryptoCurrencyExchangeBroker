@@ -11,7 +11,7 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
     {
         protected abstract OrderBookItem[]? OrderBookItems { get; }
         protected abstract bool Buy { get; }
-        public BookBestPriceState? State { get; private set; }
+        public OrderBookBestPriceState? State { get; private set; }
 
         protected OrderBookState OrderBookStateInstrument { get; private set; }
         private decimal cryptoAmount;
@@ -26,7 +26,7 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
             State = CalcValue();
         }
 
-        private BookBestPriceState? CalcValue()
+        private OrderBookBestPriceState? CalcValue()
         {
             var orderBookItems = OrderBookItems;
             
@@ -50,7 +50,7 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
             }
 
             return
-                new BookBestPriceState()
+                new OrderBookBestPriceState()
                 {
                     ID = Guid.NewGuid().ToString(),
                     Instrument = OrderBookStateInstrument.Instrument,

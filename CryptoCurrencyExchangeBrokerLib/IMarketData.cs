@@ -9,5 +9,5 @@ public interface IMarketData
     void Stop();
     void Subscribe(ChannelEnum channel);
     void Unsubscribe(ChannelEnum channel);
-    BookBestPriceState? GetBestPrice(bool buy, decimal cryptoAmount);
+    OrderBookBestPriceState? GetBestPrice(bool buy, decimal cryptoAmount);
 }

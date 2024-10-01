@@ -1,12 +1,6 @@
-using CryptoCurrencyExchangeBrokerLib;
-using System.Diagnostics.Metrics;
+using CryptoCurrencyExchangeBrokerAPI;
 
 var builder = WebApplication.CreateBuilder(args);
-
-if (builder.Configuration["AutoStart"] == "true")
-{
-    MarketDataControl.MarketDataInstance.Start();
-}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,16 +15,27 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+var cryptoHandlerListener = new CryptoHandlerListener(app.Logger);
+
+var cryptoHandler = new CryptoHandler(cryptoHandlerListener);
+
+if (builder.Configuration["AutoStart"] == "true")
+{
+    cryptoHandler.Start();
+}
 
 app.MapGet("/", () => "Hello CryptoCurrencyExchangeBroker User!");
 
-app.MapGet("/start", () => MarketDataControl.MarketDataInstance.Start());
+app.MapGet("/start", () => cryptoHandler.Start());
 
-app.MapGet("/stop", () => MarketDataControl.MarketDataInstance.Stop());
+app.MapGet("/stop", () => cryptoHandler.Stop());
 
-app.MapPost("/subscribe-order-book", (string instrument) => MarketDataControl.MarketDataInstance.Subscribe(ChannelEnum.OrderBook, instrument));
+app.MapGet("/subscribe-order-book", (string instrument) => cryptoHandler.SubscribeOrderBook(instrument));
 
-app.MapPost("/unsubscribe-order-book", (string instrument) => MarketDataControl.MarketDataInstance.Unsubscribe(ChannelEnum.OrderBook, instrument));
+app.MapGet("/unsubscribe-order-book", (string instrument) => cryptoHandler.UnsubscribeOrderBook(instrument));
 
+app.MapGet("/order-book", (string instrument) => cryptoHandler.GetOrderBookState(instrument));
+
+app.MapGet("/best-price", (string instrument, bool buy, decimal cryptoAmount) => cryptoHandler.GetBestPrice(instrument, buy, cryptoAmount));
 
 app.Run();

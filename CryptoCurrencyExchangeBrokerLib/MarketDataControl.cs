@@ -77,7 +77,7 @@ public class MarketDataControl : IMarketData
     /// <param name="instrument">instrument exchange key</param>
     /// <param name="cryptoAmount">volume</param>
     /// <returns>Best Price statement</returns>
-    public BookBestPriceState? GetBestPrice(bool buy, decimal cryptoAmount)
+    public OrderBookBestPriceState? GetBestPrice(bool buy, decimal cryptoAmount)
     {
         lock (locker)
         {
