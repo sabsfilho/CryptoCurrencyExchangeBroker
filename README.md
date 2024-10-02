@@ -2,7 +2,7 @@
 
 ## Service Oriented Architecture using AZURE cloud resources<br/>
 
-- CryptoCurrency .NET 8 Minimal API solution using the Bitstamp.net crypto exchange Websocket API.<br/>
+- CryptoCurrency .NET 8 Minimal API solution using the [Bitstamp.net crypto exchange Websocket API](https://www.bitstamp.net/websocket/v2/).<br/>
 - Adopted GitHub Actions CI/CD pipeline to Azure Web App and also consuming Azure Cosmos DB with Entity Framework.<br/>
 - Development based on Parallel Programming, SOLID, Separation of Concerns, Clean Code, Object Oriented and Domain Driven Design best practices.<br/>
 
@@ -35,7 +35,7 @@ __Environment Configuration__
   - WriteLimitPerSession: limits the number of writer per session to control database unexpected growth<br/>
   
 I've created a GitHub Actions CI/CD pipeline to Azure Web App and I also configured it to be public.<br/>
-So, it's possible to consume this API using Postman or SWAGGER UI<br/>
+So, it's possible to consume this API using [Postman](https://www.postman.com/) or [SWAGGER UI](https://swagger.io/tools/swagger-ui/)<br/>
 
 __API Endpoints__<br/>
 /start<br/>
