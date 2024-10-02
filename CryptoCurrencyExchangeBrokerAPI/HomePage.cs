@@ -9,32 +9,79 @@
 <head>
     <meta charset=""utf-8"" />
     <title>CryptoCurrencyExchangeBroker App</title>
+    <style>
+        body {
+            font-family:arial;
+            margin: 10px 20px
+        }
+        .title{
+            font-size:18px;
+            font-weight: bold;
+            text-align:center
+        }
+        .subtitle {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration:underline double
+        }
+    </style>
 </head>
 <body>
-    <div><b>Hello CryptoCurrencyExchangeBroker User!</b></div>
+    <div class=""title"">Hello CryptoCurrencyExchangeBroker User!</div>
     <div>
-        <div>API Endpoints</div>
+        <div><b>API Endpoints</b></div>
         <div>
             <ul>
-                <li><a href=""/start"">start</a></li>
-                <li><a href=""/stop"">stop</a></li>
-                <li><a href=""/subscribe-order-book?instrument=btcusd"">subscribe-order-book-btcusd</a></li>
-                <li><a href=""/unsubscribe-order-book?instrument=btcusd"">unsubscribe-order-book-btcusd</a></li>
-                <li><a href=""/order-book?instrument=btcusd"">order-book-btcusd</a></li>
-                <li><a href=""/best-price?instrument=btcusd&buy=true&cryptoAmount=0.5"">best-price-btcusd buy=true&cryptoAmount=0.5</a></li>
-                <li><a href=""/order-book-cosmosdb?instrument=btcusd"">order-book-cosmosdb-btcusd</a></li>
+                <li><a href=""/start"" target=""_blank"">start</a></li>
+                <li><a href=""/stop"" target=""_blank"">stop</a></li>
+                <li><a href=""/subscribe-order-book?instrument=btcusd"" target=""_blank"">subscribe-order-book-btcusd</a></li>
+                <li><a href=""/unsubscribe-order-book?instrument=btcusd"" target=""_blank"">unsubscribe-order-book-btcusd</a></li>
+                <li><a href=""/order-book?instrument=btcusd"" target=""_blank"">order-book-btcusd</a></li>
+                <li><a href=""/best-price?instrument=btcusd&buy=true&cryptoAmount=0.5"" target=""_blank"">best-price-btcusd buy=true&cryptoAmount=0.5</a></li>
+                <li><a href=""/order-book-cosmosdb?instrument=btcusd"" target=""_blank"">order-book-cosmosdb-btcusd</a></li>
             </ul>
         </div>
-        <p>CryptoCurrency .NET 8 Minimal API solution using the Bitstamp.net crypto exchange Websocket API. Adopted GitHub Actions CI/CD pipeline to Azure Web App and also consuming Azure Cosmos DB with Entity Framework. Development based on Parallel Programming, SOLID, Clean Code, Object Oriented and Domain Driven Design</p>
-        <p><a href=""https://github.com/sabsfilho/CryptoCurrencyExchangeBroker"">Clique aqui para ver a estrutura desse projeto no GitHub.</a></p>
+        <div class=""subtitle"">Service Oriented Architecture using AZURE cloud resources</div>
+        <p>CryptoCurrency .NET 8 Minimal API solution using the Bitstamp.net crypto exchange Websocket API. Adopted GitHub Actions CI/CD pipeline to Azure Web App and also consuming Azure Cosmos DB with Entity Framework. Development based on Parallel Programming, SOLID, Separation of Concerns, Clean Code, Object Oriented and Domain Driven Design</p>
         <div>
-            <p><b>CryptoCurrencyExchangeBrokerConsole</b>: .NET 8 Console Application created to test all the functionalities</p>
+            <p><b>Project modules detail</b></p>
+            <p><b>CryptoCurrencyExchangeBrokerConsole</b>: .NET 8 Console Application created to test all the API functionalities and other features.</p>
             <p><b>CryptoCurrencyExchangeBrokerAPI</b>: .NET 8 Minimal API</p>
+            <p>
+                <b>CryptoCurrencyExchangeBrokerLib</b>: .NET 8 Business Logic Decoupled Layer following the Separation of Concerns principles.
+                <ul>
+                    <li>Websocket control implemented (start,restart,stop,error handling)</li>
+                    <li>Handling each Instrument on a separate channel to optimize processor speed individually</li>
+                    <li>Parallel programing carefully using locks to avoid deadlocks or procesing rate issues</li>
+                    <li>
+                        <div>Environment Configuration</div>
+                        <ul>
+                            <li>AutoStart: initiate the Default (btcusd,ethusd) Instruments subscription at the beginning of the Application initialization.</li>
+                            <li>AutoStop: to reduce cloud costs automatically ends the signal streaming channels after 5 minutes (configured).</li>
+                            <li>DatabaseEnabled: also to reduce cloud costs, the persistence layer can be turned off.</li>
+                            <li>WriteLimitPerSession: limits the number of writer per session to control database unexpected growth</li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+            <p>
+                <b>BitstampLib</b>: .NET 8 Library to handle the signal and metadata from the <a href=""https://www.bitstamp.net/websocket/v2/"">Bitstamp crypto exchange Websocket provider</a>
+            </p>
+            <p>
+            <p>
+                <b>PersistenceLayerCosmosDBLib</b>: .NET 8 Persistence Layer Library to handle the Cosmos DB NoSQL Database resources using Entity Framework to hold the object relational mapping model.<br />
+                <i>Consuming Microsoft.EntityFrameworkCore.Cosmos Library</i>
+            </p>
+            <p>I've created a GitHub Actions CI/CD pipeline to Azure Web App and I also configured it to be public.<br/>
+            So, it's possible to consume this API using <a href=""https://www.postman.com/"" target=""_blank"">Postman</a> or <a href=""https://swagger.io/tools/swagger-ui/"" target=""_blank"">SWAGGER UI</a>
+            </p>
         </div>
-        <p>Se tiver alguma dúvida, favor entrar em contato.</p>
+        <p><a href=""https://github.com/sabsfilho/CryptoCurrencyExchangeBroker"">Click here to see this project code and artifacts on my GitHub repository.</a></p>
+        <p>If you have any concerns, please let me know.</p>
         <p>
-            Cordialmente,<br />
-            Samuel<br /><a href=""https://sabsfilho.github.io/dev/"">https://sabsfilho.github.io/dev/</a>
+            Cordially,<br />
+            Samuel<br /><a href=""https://sabsfilho.github.io/dev/"" target=""_blank"">https://sabsfilho.github.io/dev/</a>
         </p>
     </div>
 </body>
