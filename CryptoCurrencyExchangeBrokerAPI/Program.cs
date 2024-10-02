@@ -27,7 +27,11 @@ if (builder.Configuration["AutoStart"] == "true")
 if (builder.Configuration["AutoStop"] == "true")
 {
     cryptoHandler.ForceStopInMilliseconds = 300_000; //60*5*1000=5 minutes
-    cryptoHandler.ForceStopInMilliseconds = 20000;
+    cryptoHandler.ForceStopInMilliseconds = 120000;
+}
+if (builder.Configuration["DatabaseEnabled"] == "true")
+{
+    cryptoHandler.DatabaseEnabled = true;
 }
 
 app.MapGet("/", () => Results.Text(File.ReadAllText("home.html"), "text/html") );

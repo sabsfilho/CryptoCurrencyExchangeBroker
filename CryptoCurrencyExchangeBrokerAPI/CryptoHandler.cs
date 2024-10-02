@@ -17,6 +17,7 @@ namespace CryptoCurrencyExchangeBrokerAPI
             };
 
         public int ForceStopInMilliseconds { get; set; }
+        public bool DatabaseEnabled { get; set; }
 
         private object locker = new object();
         private CryptoHandlerListener cryptoHandlerListener;
@@ -82,11 +83,14 @@ namespace CryptoCurrencyExchangeBrokerAPI
                 if (MarketDataInstances == null)
                     Start(null);
 
-
-                var databaseWriter = new CosmosDBWriter(cryptoHandlerListener)
+                CosmosDBWriter? databaseWriter = null;
+                if (DatabaseEnabled)
                 {
-                    WriteLimitPerSession = 10
-                };
+                    databaseWriter = new CosmosDBWriter(cryptoHandlerListener)
+                    {
+                        WriteLimitPerSession = 10
+                    };
+                }
 
                 var marketDataInstance =
                     MarketDataControl.SubscribeOrderBook(
@@ -153,6 +157,9 @@ namespace CryptoCurrencyExchangeBrokerAPI
 
         internal OrderBook[] GetOrderBookStateFromCosmosDB(string instrument)
         {
+            if (!DatabaseEnabled)
+                throw new MarketDataException("Database is disable to reduce costs. Enable it first before starting the app.");
+
             return new OrderBook[0];
         }
     }
