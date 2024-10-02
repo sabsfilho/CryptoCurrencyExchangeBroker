@@ -28,12 +28,6 @@ __PersistenceLayerCosmosDBLib__: .NET 8 Persistence Layer Library to handle the 
 - Consuming Microsoft.EntityFrameworkCore.Cosmos Library<br/>
 - Using Azure Key Vault service to secure the connection string and sensitive environment parameters. It's very important to store these parameters encrypted and outside from any project files. We need to keep in mind GitHub is a great code control product but it's a cloud solution and our sensitive information can be exploited.<br/>
 
-__Environment Configuration__
-  - AutoStart: initiate the Default (btcusd,ethusd) Instruments subscription at the beginning of the Application initialization.<br/>
-  - AutoStop: to reduce cloud costs automatically ends the signal streaming channels after 5 minutes (configured).<br/>
-  - DatabaseEnabled: also to reduce cloud costs, the persistence layer can be turned off.<br/>
-  - WriteLimitPerSession: limits the number of writer per session to control database unexpected growth<br/>
-  
 I've created a GitHub Actions CI/CD pipeline to Azure Web App and I also configured it to be public.<br/>
 So, it's possible to consume this API using [Postman](https://www.postman.com/) or [SWAGGER UI](https://swagger.io/tools/swagger-ui/)<br/>
 
