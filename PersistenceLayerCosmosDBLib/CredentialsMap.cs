@@ -24,6 +24,8 @@ namespace PersistenceLayerCosmosDBLib
         }
         private static string GetConnectionString(string tenantID)
         {
+            //HACK TO WORK ON LOCAL DEV MACHINE
+            /*
             var credentials = new DefaultAzureCredential(new DefaultAzureCredentialOptions()
             {
                 VisualStudioTenantId = tenantID,
@@ -32,6 +34,8 @@ namespace PersistenceLayerCosmosDBLib
                 InteractiveBrowserTenantId = tenantID,
                 ExcludeManagedIdentityCredential = true
             });
+            */
+            var credentials = new DefaultAzureCredential();
 
              var client = new SecretClient(new Uri(KV_URI), credentials);
 

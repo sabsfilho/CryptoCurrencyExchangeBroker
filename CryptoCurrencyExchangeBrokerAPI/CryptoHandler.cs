@@ -16,6 +16,8 @@ namespace CryptoCurrencyExchangeBrokerAPI
                 "ethusd"
             };
 
+        public int ForceStopInMilliseconds { get; set; }
+
         private object locker = new object();
         private CryptoHandlerListener cryptoHandlerListener;
 
@@ -46,6 +48,15 @@ namespace CryptoCurrencyExchangeBrokerAPI
                         SubscribeOrderBook(instrument);
                     }
                 }
+
+                if (ForceStopInMilliseconds > 0)
+                {
+                    Task.Factory.StartNew(() =>
+                    {
+                        Thread.Sleep(ForceStopInMilliseconds);
+                        Stop();
+                    });
+                }
             }
         }
         public void Stop()
@@ -59,6 +70,8 @@ namespace CryptoCurrencyExchangeBrokerAPI
                 {
                     item.Value.Stop();
                 }
+
+                MarketDataInstances = null;
             }
         }
 
@@ -136,15 +149,6 @@ namespace CryptoCurrencyExchangeBrokerAPI
                     MarketDataInstances[instrument]
                     .GetBestPrice(buy, cryptoAmount);
             }
-        }
-
-        internal void AutoStop(int delayInMilliseconds)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                Thread.Sleep(delayInMilliseconds);
-                Stop();
-            });
         }
 
         internal OrderBook[] GetOrderBookStateFromCosmosDB(string instrument)
