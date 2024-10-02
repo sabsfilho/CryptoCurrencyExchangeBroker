@@ -1,11 +1,7 @@
 ﻿using BitstampLib.exchange;
 using CryptoCurrencyExchangeBrokerLib;
 using CryptoCurrencyExchangeBrokerLib.exchange;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Unicode;
-using System.Threading.Channels;
 
 namespace BitstampLib;
 /// <summary>
@@ -111,7 +107,7 @@ public class BitstampProvider : IMarketDataProvider
             throw new BitstampException($"instrument undefined in {channel}");
         return (
             channel.Substring(0, i),
-            channel.Substring(i+1)
+            channel.Substring(i + 1)
         );
     }
 

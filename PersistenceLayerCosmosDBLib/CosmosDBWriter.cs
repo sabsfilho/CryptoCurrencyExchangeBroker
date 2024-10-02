@@ -1,6 +1,5 @@
 ﻿using CryptoCurrencyExchangeBrokerLib;
 using CryptoCurrencyExchangeBrokerLib.exchange;
-using System.Drawing.Printing;
 
 namespace PersistenceLayerCosmosDBLib
 {
@@ -18,7 +17,7 @@ namespace PersistenceLayerCosmosDBLib
 
         public CosmosDBWriter(
             IDatabaseListener databaseListener,
-            string? connectionString = null, 
+            string? connectionString = null,
             string? databaseName = null
         )
         {

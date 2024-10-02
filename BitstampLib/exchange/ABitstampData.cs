@@ -1,17 +1,15 @@
 ﻿using CryptoCurrencyExchangeBrokerLib.exchange;
-using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace BitstampLib.exchange;
-internal abstract class ABitstampData<T> 
+internal abstract class ABitstampData<T>
     where T : AExchangeData
 {
     public abstract T Load(string instrument);
     protected Object Data { get; private set; }
     protected JsonElement DataJson => (JsonElement)Data;
     public T ExchangeData { get; set; }
-    
+
     public ABitstampData(string instrument, object data)
     {
         Data = data;
@@ -48,7 +46,7 @@ internal abstract class ABitstampData<T>
     private static DateTime ConvertFromUnixDate(string v)
     {
         long unixDate = long.Parse(v.PadRight(13, '0').Substring(0, 13));
-        
+
         return
             new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             .AddMilliseconds(unixDate)

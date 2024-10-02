@@ -1,6 +1,4 @@
 ﻿using CryptoCurrencyExchangeBrokerLib.exchange;
-using System.Diagnostics.Metrics;
-using System.Threading.Channels;
 
 namespace CryptoCurrencyExchangeBrokerLib;
 public interface IMarketDataProvider

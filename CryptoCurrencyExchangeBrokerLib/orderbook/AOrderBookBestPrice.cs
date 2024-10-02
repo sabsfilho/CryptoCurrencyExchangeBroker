@@ -1,9 +1,4 @@
 ﻿using CryptoCurrencyExchangeBrokerLib.exchange;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CryptoCurrencyExchangeBrokerLib.orderbook
 {
@@ -29,13 +24,13 @@ namespace CryptoCurrencyExchangeBrokerLib.orderbook
         private OrderBookBestPriceState? CalcValue()
         {
             var orderBookItems = OrderBookItems;
-            
+
             if (orderBookItems == null || orderBookItems.Length == 0)
                 return null;
 
             decimal amount = cryptoAmount;
             decimal sum = 0;
-            foreach(var x in orderBookItems)
+            foreach (var x in orderBookItems)
             {
                 decimal a = x.Amount;
                 decimal p = x.Price;

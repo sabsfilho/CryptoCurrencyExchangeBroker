@@ -1,10 +1,5 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistenceLayerCosmosDBLib
 {
@@ -37,12 +32,12 @@ namespace PersistenceLayerCosmosDBLib
             */
             var credentials = new DefaultAzureCredential();
 
-             var client = new SecretClient(new Uri(KV_URI), credentials);
+            var client = new SecretClient(new Uri(KV_URI), credentials);
 
             var secret = client.GetSecret(KV_CONNECTION_STRING);
 
             return secret.Value.Value;
-            
+
         }
 
 

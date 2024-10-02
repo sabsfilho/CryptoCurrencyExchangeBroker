@@ -1,6 +1,5 @@
 ﻿using CryptoCurrencyExchangeBrokerLib;
 using PersistenceLayerCosmosDBLib;
-using System;
 
 namespace CryptoCurrencyExchangeBrokerAPI
 {

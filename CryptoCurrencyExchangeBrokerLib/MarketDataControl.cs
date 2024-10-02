@@ -1,12 +1,4 @@
-﻿using CryptoCurrencyExchangeBrokerLib.exchange;
-using CryptoCurrencyExchangeBrokerLib.orderbook;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CryptoCurrencyExchangeBrokerLib.orderbook;
 
 namespace CryptoCurrencyExchangeBrokerLib;
 public class MarketDataControl : IMarketData

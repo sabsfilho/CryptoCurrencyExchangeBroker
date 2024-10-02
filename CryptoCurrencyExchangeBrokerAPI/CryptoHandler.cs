@@ -3,13 +3,12 @@ using CryptoCurrencyExchangeBrokerLib;
 using CryptoCurrencyExchangeBrokerLib.exchange;
 using CryptoCurrencyExchangeBrokerLib.orderbook;
 using PersistenceLayerCosmosDBLib;
-using System.Diagnostics.Metrics;
 
 namespace CryptoCurrencyExchangeBrokerAPI
 {
     public class CryptoHandler
     {
-        private static string[] DEFAULT_INSTRUMENTS = 
+        private static string[] DEFAULT_INSTRUMENTS =
             new string[]
             {
                 "btcusd",
@@ -18,6 +17,7 @@ namespace CryptoCurrencyExchangeBrokerAPI
 
         public int ForceStopInMilliseconds { get; set; }
         public bool DatabaseEnabled { get; set; }
+        public int WriteLimitPerSession { get; set; }
 
         private object locker = new object();
         private CryptoHandlerListener cryptoHandlerListener;
@@ -88,7 +88,7 @@ namespace CryptoCurrencyExchangeBrokerAPI
                 {
                     databaseWriter = new CosmosDBWriter(cryptoHandlerListener)
                     {
-                        WriteLimitPerSession = 10
+                        WriteLimitPerSession = WriteLimitPerSession
                     };
                 }
 

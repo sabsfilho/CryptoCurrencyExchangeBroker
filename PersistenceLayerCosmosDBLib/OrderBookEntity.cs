@@ -1,18 +1,12 @@
 ﻿using CryptoCurrencyExchangeBrokerLib.exchange;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PersistenceLayerCosmosDBLib
 {
     internal class OrderBookEntity : AEntity
     {
         public OrderBook? OrderBook { get; set; }
-        public OrderBookEntity() 
+        public OrderBookEntity()
             : base()
         {
         }

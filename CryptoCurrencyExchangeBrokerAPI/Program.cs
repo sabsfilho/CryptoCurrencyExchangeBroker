@@ -33,8 +33,11 @@ if (builder.Configuration["DatabaseEnabled"] == "true")
 {
     cryptoHandler.DatabaseEnabled = true;
 }
+int writeLimitPerSession = 0;
+int.TryParse(builder.Configuration["WriteLimitPerSession"], out writeLimitPerSession);
+cryptoHandler.WriteLimitPerSession = writeLimitPerSession;
 
-app.MapGet("/", () => Results.Text(File.ReadAllText("home.html"), "text/html") );
+app.MapGet("/", () => Results.Text(HomePage.Get(), "text/html"));
 
 app.MapGet("/start", () => cryptoHandler.Start());
 

@@ -2,7 +2,6 @@
 using CryptoCurrencyExchangeBrokerConsole;
 using CryptoCurrencyExchangeBrokerLib;
 using PersistenceLayerCosmosDBLib;
-using System.Runtime.CompilerServices;
 
 Console.WriteLine("CryptoCurrencyExchangeBroker Bitstamp version");
 Console.WriteLine("** This version subscribes btcusd and ethusd instruments. **\n");
@@ -79,5 +78,5 @@ Console.WriteLine("exit");
 static bool BuildYesMessage(string m)
 {
     Console.WriteLine($"\n{m} ? [Y]");
-    return new List<char>{ 'Y', 'y' }.Contains(Console.ReadKey().KeyChar);
+    return new List<char> { 'Y', 'y' }.Contains(Console.ReadKey().KeyChar);
 }

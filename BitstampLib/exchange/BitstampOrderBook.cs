@@ -1,5 +1,4 @@
 ﻿using CryptoCurrencyExchangeBrokerLib.exchange;
-using System.Text.Json.Serialization;
 
 namespace BitstampLib.exchange;
 internal class BitstampOrderBook : ABitstampData<OrderBook>
@@ -10,7 +9,7 @@ internal class BitstampOrderBook : ABitstampData<OrderBook>
     }
     public override OrderBook Load(string instrument)
     {
-        return new OrderBook() 
+        return new OrderBook()
         {
             Instrument = instrument,
             Timestamp = GetMicrotimestamp(),
