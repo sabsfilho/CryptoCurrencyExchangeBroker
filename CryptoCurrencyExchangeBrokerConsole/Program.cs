@@ -1,15 +1,27 @@
 ﻿using BitstampLib;
 using CryptoCurrencyExchangeBrokerConsole;
 using CryptoCurrencyExchangeBrokerLib;
+using PersistenceLayerCosmosDBLib;
 using System.Runtime.CompilerServices;
 
 Console.WriteLine("CryptoCurrencyExchangeBroker Bitstamp version");
 Console.WriteLine("** This version subscribes btcusd and ethusd instruments. **\n");
 
-bool LOG_MESSAGE_RECEIVED = BuildYesMessage("Do you want to log all messages received from Websocket");
-bool LOG_ORDER_BOOK_STATE = BuildYesMessage("Do you want to log Order Book values on each 5 sec");
-bool LOG_GET_BEST_PRICE = BuildYesMessage("Do you want to log current best prices");
-bool LOG_GET_BEST_PRICE_FULL_DETAIL = BuildYesMessage("Do you want to log current best prices including full detail information");
+const bool LOCAL_TEST_MODE = false;
+
+bool LOG_MESSAGE_RECEIVED = false;
+bool LOG_ORDER_BOOK_STATE = false;
+bool LOG_GET_BEST_PRICE = false;
+bool LOG_GET_BEST_PRICE_FULL_DETAIL = false;
+
+if (!LOCAL_TEST_MODE)
+{
+    LOG_MESSAGE_RECEIVED = BuildYesMessage("Do you want to log all messages received from Websocket");
+    LOG_ORDER_BOOK_STATE = BuildYesMessage("Do you want to log Order Book values on each 5 sec");
+    LOG_GET_BEST_PRICE = BuildYesMessage("Do you want to log current best prices");
+    LOG_GET_BEST_PRICE_FULL_DETAIL = BuildYesMessage("Do you want to log current best prices including full detail information");
+}
+
 
 Console.WriteLine("CryptoCurrencyExchangeBroker running...");
 Console.WriteLine("\n\n*** Press any key to stop. ***\n\n");
@@ -27,13 +39,19 @@ var localListener =
         LogMessageReceived = LOG_MESSAGE_RECEIVED
     };
 
+var databaseWriter = new CosmosDBWriter(localListener)
+{
+    WriteLimitPerSession = 10
+};
+
 foreach (var intrument in instruments)
 {
     var marketDataInstance =
         MarketDataControl.SubscribeOrderBook(
             intrument,
             provider,
-            localListener
+            localListener,
+            databaseWriter
         );
 
     if (LOG_ORDER_BOOK_STATE)

@@ -24,7 +24,12 @@ if (builder.Configuration["AutoStart"] == "true")
     cryptoHandler.Start();
 }
 
-app.MapGet("/", () => "Hello CryptoCurrencyExchangeBroker User!");
+if (builder.Configuration["AutoStop"] == "true")
+{
+    cryptoHandler.AutoStop(30000);
+}
+
+app.MapGet("/", () => Results.Text(File.ReadAllText("home.html"), "text/html") );
 
 app.MapGet("/start", () => cryptoHandler.Start());
 
@@ -37,5 +42,7 @@ app.MapGet("/unsubscribe-order-book", (string instrument) => cryptoHandler.Unsub
 app.MapGet("/order-book", (string instrument) => cryptoHandler.GetOrderBookState(instrument));
 
 app.MapGet("/best-price", (string instrument, bool buy, decimal cryptoAmount) => cryptoHandler.GetBestPrice(instrument, buy, cryptoAmount));
+
+app.MapGet("/order-book-cosmosdb", (string instrument) => cryptoHandler.GetOrderBookStateFromCosmosDB(instrument));
 
 app.Run();

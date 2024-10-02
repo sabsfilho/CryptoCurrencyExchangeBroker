@@ -1,10 +1,12 @@
 ﻿using CryptoCurrencyExchangeBrokerLib;
+using PersistenceLayerCosmosDBLib;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace CryptoCurrencyExchangeBrokerConsole;
-public class LocalMarketDataEventListener : IMarketDataEventListener
+public class LocalMarketDataEventListener : IMarketDataEventListener, IDatabaseListener
 {
+    #region IMarketDataEventListener
     public bool LogMessageReceived { get; set; }
     public void ExceptionThrown(Exception ex)
     {
@@ -122,4 +124,11 @@ public class LocalMarketDataEventListener : IMarketDataEventListener
             }
         });
     }
+    #endregion
+    #region IDatabaseListener
+    public void SaveChangesFailed(Exception ex)
+    {
+        ExceptionThrown(ex);
+    }
+    #endregion
 }

@@ -1,11 +1,14 @@
 ﻿using CryptoCurrencyExchangeBrokerLib;
+using PersistenceLayerCosmosDBLib;
 using System;
 
 namespace CryptoCurrencyExchangeBrokerAPI
 {
-    public class CryptoHandlerListener : IMarketDataEventListener
+    public class CryptoHandlerListener : IMarketDataEventListener, IDatabaseListener
     {
         private ILogger logger;
+
+        #region IMarketDataEventListener
 
         public bool LogMessageReceived { get; set; }
 
@@ -56,5 +59,13 @@ namespace CryptoCurrencyExchangeBrokerAPI
         {
             logger.LogInformation(msg);
         }
+        #endregion
+        #region IDatabaseListener
+        public void SaveChangesFailed(Exception ex)
+        {
+            ExceptionThrown(ex);
+        }
+        #endregion
+
     }
 }

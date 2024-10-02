@@ -1,6 +1,8 @@
 ﻿using BitstampLib;
 using CryptoCurrencyExchangeBrokerLib;
+using CryptoCurrencyExchangeBrokerLib.exchange;
 using CryptoCurrencyExchangeBrokerLib.orderbook;
+using PersistenceLayerCosmosDBLib;
 using System.Diagnostics.Metrics;
 
 namespace CryptoCurrencyExchangeBrokerAPI
@@ -67,11 +69,18 @@ namespace CryptoCurrencyExchangeBrokerAPI
                 if (MarketDataInstances == null)
                     Start(null);
 
+
+                var databaseWriter = new CosmosDBWriter(cryptoHandlerListener)
+                {
+                    WriteLimitPerSession = 10
+                };
+
                 var marketDataInstance =
                     MarketDataControl.SubscribeOrderBook(
                         instrument,
                         Provider!,
-                        cryptoHandlerListener
+                        cryptoHandlerListener,
+                        databaseWriter
                     );
 
                 MarketDataInstances!.Add(instrument, marketDataInstance);
@@ -127,6 +136,20 @@ namespace CryptoCurrencyExchangeBrokerAPI
                     MarketDataInstances[instrument]
                     .GetBestPrice(buy, cryptoAmount);
             }
+        }
+
+        internal void AutoStop(int delayInMilliseconds)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                Thread.Sleep(delayInMilliseconds);
+                Stop();
+            });
+        }
+
+        internal OrderBook[] GetOrderBookStateFromCosmosDB(string instrument)
+        {
+            return new OrderBook[0];
         }
     }
 }

@@ -21,10 +21,11 @@ public class MarketDataControl : IMarketData
     public MarketDataControl(
         string instrument,
         IMarketDataProvider provider,
-        IMarketDataEventListener listener
+        IMarketDataEventListener listener,
+        IMarketDataWriter? writer = null
     )
     {
-        MarketDataWebSocket = new MarketDataWebSocket(instrument, provider, listener);
+        MarketDataWebSocket = new MarketDataWebSocket(instrument, provider, listener, writer);
     }
 
     /// <summary>
@@ -96,13 +97,15 @@ public class MarketDataControl : IMarketData
     public static MarketDataControl SubscribeOrderBook(
         string instrument,
         IMarketDataProvider provider,
-        IMarketDataEventListener listener
+        IMarketDataEventListener listener,
+        IMarketDataWriter? writer = null
     )
     {
         var marketDataInstance = new MarketDataControl(
             instrument,
             provider,
-            listener
+            listener,
+            writer
         );
 
         marketDataInstance.Subscribe(

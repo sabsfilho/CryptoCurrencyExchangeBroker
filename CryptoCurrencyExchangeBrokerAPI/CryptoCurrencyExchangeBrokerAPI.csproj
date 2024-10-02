@@ -8,13 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="home.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.17" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Page Include="home.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BitstampLib\BitstampLib.csproj" />
     <ProjectReference Include="..\CryptoCurrencyExchangeBrokerLib\CryptoCurrencyExchangeBrokerLib.csproj" />
+    <ProjectReference Include="..\PersistenceLayerCosmosDBLib\PersistenceLayerCosmosDBLib.csproj" />
   </ItemGroup>
 
 </Project>
