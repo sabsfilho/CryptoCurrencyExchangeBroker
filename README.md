@@ -45,6 +45,8 @@ __API Endpoints__<br/>
 /order-book-btcusd<br/>
 /best-price-btcusd buy=true&cryptoAmount=0.5<br/>
 /order-book-cosmosdb-btcusd<br/>
+_*these API's examples are using the Bitcoin (BTC) to Dollar (USD) intrument._<br/>
+_*You can change to other instrument as __ethusd__ to query Ethereum (ETH) to Dollar (USD) instrument._<br/>
 
 If you have any ideas to improve this project, please let me know.<br/>
 Let's team up!<br/>
