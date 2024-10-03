@@ -40,11 +40,15 @@
                 <li><a href=""/order-book?instrument=btcusd"" target=""_blank"">order-book-btcusd</a></li>
                 <li><a href=""/best-price?instrument=btcusd&buy=true&cryptoAmount=0.5"" target=""_blank"">best-price-btcusd buy=true&cryptoAmount=0.5</a></li>
                 <li><a href=""/order-book-cosmosdb?instrument=btcusd"" target=""_blank"">order-book-cosmosdb-btcusd</a></li>
+                <li><a href=""/order-book-report?instrument=btcusd"" target=""_blank"">order-book-report-btcusd</a> <b>==> html user interface</b></li>
             </ul>
             <p>
                 <i>
                     <p>side notes:</p>
                     <ul>
+                        <li>
+                            I recommend click on /subscribe-order-book-btcusd and then /order-book-report-btcusd
+                        </li>
                         <li>
                             These API's examples are using the Bitcoin (BTC) to Dollar (USD) instrument.<br />
                             You can change to other instrument as <b>ethusd</b> to query Ethereum (ETH) to Dollar (USD) instrument.

@@ -1,4 +1,5 @@
 using CryptoCurrencyExchangeBrokerAPI;
+using System.Diagnostics.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,7 @@ int writeLimitPerSession = 0;
 int.TryParse(builder.Configuration["WriteLimitPerSession"], out writeLimitPerSession);
 cryptoHandler.WriteLimitPerSession = writeLimitPerSession;
 
-app.MapGet("/", () => Results.Text(HomePage.Get(), "text/html"));
+app.MapGet("/", () => ToHtml(HomePage.Get()));
 
 app.MapGet("/start", () => cryptoHandler.Start());
 
@@ -53,4 +54,9 @@ app.MapGet("/best-price", (string instrument, bool buy, decimal cryptoAmount) =>
 
 app.MapGet("/order-book-cosmosdb", (string instrument) => cryptoHandler.GetOrderBookStateFromCosmosDB(instrument));
 
+app.MapGet("/order-book-report", (string instrument) => ToHtml(OrderBookPage.Get(cryptoHandler.GetOrderBookState(instrument))));
+
 app.Run();
+
+
+static IResult ToHtml(string txt) => Results.Text(txt, "text/html");
