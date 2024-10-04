@@ -46,6 +46,8 @@ _*You can change to other instrument as __ethusd__ to query Ethereum (ETH) to Do
 _*I recommend click on /subscribe-order-book-btcusd and then /order-book-report-btcusd_<br/>
 _*The /start endpoint initiates the Websocket streaming and subscribe the default instruments (__BTCUSD,ETHUSD__)_<br/>
 
+![SWAGGER API DOC](https://sabsfilho.github.io/dev/assets/img/crypto/CryptoCurrencyExchangeBrokerSwaggerUI.png)
+
 If you have any ideas to improve this project, please let me know.<br/>
 Let's team up!<br/>
 
