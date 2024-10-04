@@ -48,6 +48,9 @@ _*The /start endpoint initiates the Websocket streaming and subscribe the defaul
 
 ![SWAGGER API DOC](https://sabsfilho.github.io/dev/assets/img/crypto/CryptoCurrencyExchangeBrokerSwaggerUI.png)
 
+/order-book-report?instrument=btcusd
+![CryptoCurrencyExchangeBroker Logo](https://sabsfilho.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoOrderBook_BTCUSD.jpg)
+
 If you have any ideas to improve this project, please let me know.<br/>
 Let's team up!<br/>
 
