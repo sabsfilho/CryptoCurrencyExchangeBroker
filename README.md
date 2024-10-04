@@ -6,6 +6,8 @@
 - Adopted GitHub Actions CI/CD pipeline to Azure Web App and also consuming Azure Cosmos DB with Entity Framework.<br/>
 - Development based on Parallel Programming, SOLID, Separation of Concerns, Clean Code, Object Oriented and Domain Driven Design best practices.<br/>
 
+![CryptoCurrencyExchangeBroker HighLevelDesign](https://sabsfilho.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoCurrencyExchangeBrokerHighLevelDesign.jpg)
+
 ### Project modules detail
 __CryptoCurrencyExchangeBrokerConsole__: .NET 8 Console Application created to test all the API functionalities and other features.<br/>
 - I created a questionnaire flow to help the user explore all functionalities, including logs and tests.<br/>
