@@ -1,5 +1,5 @@
 # CryptoCurrencyExchangeBroker<br/>
-
+![CryptoCurrencyExchangeBroker Logo](https://sabsfilho.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoCurrencyExchangeBroker.jpg)
 ## Service Oriented Architecture using AZURE cloud resources<br/>
 
 - CryptoCurrency .NET 8 Minimal API solution using the [Bitstamp.net crypto exchange Websocket API](https://www.bitstamp.net/websocket/v2/).<br/>
