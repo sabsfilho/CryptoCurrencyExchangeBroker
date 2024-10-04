@@ -41,7 +41,7 @@ __API Endpoints__<br/>
 /order-book-cosmosdb-btcusd<br/>
 /order-book-report-btcusd __==> html user interface__<br/>
 
-_*These API's examples are using the Bitcoin (BTC) to Dollar (USD) intrument._<br/>
+_*These API's examples are using the Bitcoin (BTC) to Dollar (USD) instrument._<br/>
 _*You can change to other instrument as __ethusd__ to query Ethereum (ETH) to Dollar (USD) instrument._<br/>
 _*I recommend click on /subscribe-order-book-btcusd and then /order-book-report-btcusd_<br/>
 _*The /start endpoint initiates the Websocket streaming and subscribe the default instruments (__BTCUSD,ETHUSD__)_<br/>
