@@ -1,12 +1,12 @@
 # CryptoCurrencyExchangeBroker<br/>
-![CryptoCurrencyExchangeBroker Logo](https://sabsfilho.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoCurrencyExchangeBroker.jpg)
+![CryptoCurrencyExchangeBroker Logo](https://samuel-santos-engineer.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoCurrencyExchangeBroker.jpg)
 ## Service Oriented Architecture using AZURE cloud resources<br/>
 
 - CryptoCurrency .NET 8 Minimal API solution using the [Bitstamp.net crypto exchange Websocket API](https://www.bitstamp.net/websocket/v2/).<br/>
 - Adopted GitHub Actions CI/CD pipeline to Azure Web App and also consuming Azure Cosmos DB with Entity Framework.<br/>
 - Development based on Parallel Programming, SOLID, Separation of Concerns, Clean Code, Object Oriented and Domain Driven Design best practices.<br/>
 
-![CryptoCurrencyExchangeBroker HighLevelDesign](https://sabsfilho.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoCurrencyExchangeBrokerHighLevelDesign.jpg)
+![CryptoCurrencyExchangeBroker HighLevelDesign](https://samuel-santos-engineer.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoCurrencyExchangeBrokerHighLevelDesign.jpg)
 
 ### Project modules detail
 __CryptoCurrencyExchangeBrokerConsole__: .NET 8 Console Application created to test all the API functionalities and other features.<br/>
@@ -48,16 +48,16 @@ _*You can change to other instrument as __ethusd__ to query Ethereum (ETH) to Do
 _*I recommend click on /subscribe-order-book-btcusd and then /order-book-report-btcusd_<br/>
 _*The /start endpoint initiates the Websocket streaming and subscribe the default instruments (__BTCUSD,ETHUSD__)_<br/>
 
-![SWAGGER API DOC](https://sabsfilho.github.io/dev/assets/img/crypto/CryptoCurrencyExchangeBrokerSwaggerUI.png)
+![SWAGGER API DOC](https://samuel-santos-engineer.github.io/dev/assets/img/crypto/CryptoCurrencyExchangeBrokerSwaggerUI.png)
 
 /order-book-report?instrument=btcusd
-![CryptoCurrencyExchangeBroker Logo](https://sabsfilho.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoOrderBook_BTCUSD.jpg)
+![CryptoCurrencyExchangeBroker Logo](https://samuel-santos-engineer.github.io/dev/articles/CryptoCurrencyExchangeBroker/CryptoOrderBook_BTCUSD.jpg)
 
 If you have any ideas to improve this project, please let me know.<br/>
 Let's team up!<br/>
 
 Cheers,<br/>
 Samuel<br/>
-https://sabsfilho.github.io/dev/<br/>
+https://samuel-santos-engineer.github.io/dev/<br/>
 
 **document under construction**
